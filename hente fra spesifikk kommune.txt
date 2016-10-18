@@ -1,0 +1,1 @@
+https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=1601
