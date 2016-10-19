@@ -21,7 +21,6 @@ xhttp.send();
 //Bygger dictionary med kommuner og kommunenr
 for(var i = 0; i < response.length; i++) {
     var obj = response[i];
-
 	kList[obj.navn] = obj.nummer;
 }
 
@@ -43,6 +42,9 @@ var Search = React.createClass({
 		this.setState({ correctID: kList[inp] })
 		validCall = "yes"
 		
+	}
+	else{
+		validCall = "no"
 	}
     this.setState({ userInput: e.target.value })
   },
