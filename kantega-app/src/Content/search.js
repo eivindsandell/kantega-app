@@ -54,7 +54,7 @@ var Search = React.createClass({
   render: function () {
     return (
       <div>
-		<p> Søk etter din kommune: </p>
+		<h3> Søk etter din kommune: </h3>
         <input type="text" onChange={this.handleUserInput} value={this.state.userInput} />
 		<Statdisplay kommune={this.state.correctInput} nummer={this.state.correctID} call={validCall}/>
       </div>

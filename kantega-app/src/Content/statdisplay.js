@@ -1,14 +1,16 @@
-var React = require('react');
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 var jquery = require('jquery');
 
 //Setter opp variabler
+// TODO erstatte noe av dette med redux
 var response = ''
 var ulykker = [];
 var dUlykker = 0;
 
 
 
-
+// Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
 function getUlykker(kommunenr, call){
 	dUlykker = 0;
 	ulykker = [];
@@ -19,16 +21,12 @@ function getUlykker(kommunenr, call){
             success: function(res){
                 return res;
         }}).then(function(res){
-            console.log("hallo")
-            console.log(res)
-            console.log(res.objekter.length)
+            console.log("Fått response fra api")
             for(var i = 0; i < res.objekter.length; i++) {
                 var obj = res.objekter[i];
-                //console.log(obj)
                 ulykker.push(obj.href)
             }
             console.log(ulykker)
-            return "Ferdig"
         });
 	return "Laster"
 	}
@@ -38,23 +36,39 @@ function getUlykker(kommunenr, call){
 
 //Lager StatDisplay komponenten
 //---------------------------------------------------------------------------------------------------------------
-var Statdisplay = React.createClass({
+class Statdisplay extends Component{
 	
-	// call er lik no for at den ikke skal sende requests til api uten at det er en godkjent kommune
-  getInitialState: function () {
-  return { kommune: '', nummer: '', call: 'no'} 
-  },
+	//Tester om loadState funker, kun for debugging
+  testState(){
+	  return this.props.load.map((load) => {
+		 return( load.debugg);
+	  });
+  }
   
-  
-  
-  render: function () {
+  // Det som skal renderes til viewet
+  render() {
     return (
-	<div>
-      <h3> Du har skrevet inn kommune: {this.props.kommune} med nummer: {this.props.nummer} </h3>
-	 <p> Ulykker: {getUlykker(this.props.nummer, this.props.call)} </p>
+	<div id="mainContent">
+		<p> Du har skrevet inn kommune: {this.props.kommune} med nummer: {this.props.nummer} </p>
+		<p>________________________________________________________________________________</p>
+		<p> Ulykker: {getUlykker(this.props.nummer, this.props.call)} </p>
+		<p> loadState test: {this.testState()}</p>
 	</div>
     );
   }
-});
+}
 
-export default Statdisplay
+//--------------------------------------------------------------------------------------------------------
+// Henter staten til loadState inn i variablen load
+function mapStateToProps(state){
+	return {
+		load: state.load
+	}
+}
+
+//TODO fikse denne funksjonen
+function matchDispachToProps(dispatch){
+	
+}
+
+export default connect(mapStateToProps)(Statdisplay);
