@@ -37,10 +37,11 @@ var Search = React.createClass({
   // Behandler user input for kommune søkebaren
   handleUserInput: function(e){
 	if (String(e.target.value) in kList){
+		validCall = "yes"
 		var inp = e.target.value
 		this.setState({ correctInput: inp })
 		this.setState({ correctID: kList[inp] })
-		validCall = "yes"
+		
 		
 	}
 	else{
