@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux'
+import {actionHandler} from '../actions/actionHandler'
 var jquery = require('jquery');
 
 //Setter opp variabler
@@ -41,7 +43,7 @@ class Statdisplay extends Component{
 	//Tester om loadState funker, kun for debugging
   testState(){
 	  return this.props.load.map((load) => {
-		 return( load.debugg);
+		 return <p onClick={() => this.props.actionHandler(load)} > loadState test: {load.debugg} </p>
 	  });
   }
   
@@ -52,7 +54,7 @@ class Statdisplay extends Component{
 		<p> Du har skrevet inn kommune: {this.props.kommune} med nummer: {this.props.nummer} </p>
 		<p>________________________________________________________________________________</p>
 		<p> Ulykker: {getUlykker(this.props.nummer, this.props.call)} </p>
-		<p> loadState test: {this.testState()}</p>
+		{this.testState()}
 	</div>
     );
   }
@@ -68,7 +70,7 @@ function mapStateToProps(state){
 
 //TODO fikse denne funksjonen
 function matchDispachToProps(dispatch){
-	
+	return bindActionCreators({actionHandler: actionHandler}, dispatch)
 }
 
-export default connect(mapStateToProps)(Statdisplay);
+export default connect(mapStateToProps, matchDispachToProps)(Statdisplay);
