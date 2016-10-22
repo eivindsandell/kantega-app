@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
-import {actionHandler} from '../actions/actionHandler'
+import {actionHandler} from '../Actions/actionHandler'
 var jquery = require('jquery');
 
 //Setter opp variabler
@@ -43,11 +43,11 @@ class Statdisplay extends Component{
 	//Tester om loadState funker, kun for debugging
   testState(){
 	  return this.props.load.map((load) => {
-		 return <p onClick={() => this.props.actionHandler(load)} > loadState test: {load.debugg} </p>
+		 return <p key={load.id} onClick={() => this.props.actionHandler(load)} > loadState test: {load.debugg} </p>
 	  });
   }
   
-  // Det som skal renderes til viewet
+  // Det som skal rendres til viewet
   render() {
     return (
 	<div id="mainContent">
@@ -64,7 +64,8 @@ class Statdisplay extends Component{
 // Henter staten til loadState inn i variablen load
 function mapStateToProps(state){
 	return {
-		load: state.load
+		load: state.load,
+		modState: state.changedLoadState
 	}
 }
 
