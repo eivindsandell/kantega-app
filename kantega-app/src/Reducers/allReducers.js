@@ -1,10 +1,9 @@
 import {combineReducers} from 'redux';
-import loadState from './loadState'
-import ChangeLoadState from './changeLoadState'
+import ulykkeReducer from './ulykkeReducer'
+
 
 const allReducers = combineReducers({
-	load : loadState,
-	changedLoadState: ChangeLoadState
+	ulykker : ulykkeReducer
 });
 
 export default allReducers;

@@ -1,11 +1,12 @@
 var React = require('react');
 import Statdisplay from './statdisplay'
+import {loadUlykker} from '../Actions/actions'
+import {connect} from 'react-redux';
 
 //Setter variabler
 var xhttp = new XMLHttpRequest();
 var response = "";
-var kList = []
-var validCall ="no";
+var kList = {};
 
 // Setter opp API kall
 xhttp.onreadystatechange = function() {
@@ -23,7 +24,7 @@ for(var i = 0; i < response.length; i++) {
     var obj = response[i];
 	kList[obj.navn] = obj.nummer;
 }
-
+console.log(kList)
 
 // Lager search komponenten
 //-------------------------------------------------------------------------------------------------------------------
@@ -37,15 +38,9 @@ var Search = React.createClass({
   // Behandler user input for kommune søkebaren
   handleUserInput: function(e){
 	if (String(e.target.value) in kList){
-		validCall = "yes"
+		console.log("Valid kommune")
 		var inp = e.target.value
-		this.setState({ correctInput: inp })
-		this.setState({ correctID: kList[inp] })
-		
-		
-	}
-	else{
-		validCall = "no"
+		this.props.loadUlykker(kList[inp])
 	}
     this.setState({ userInput: e.target.value })
   },
@@ -56,10 +51,21 @@ var Search = React.createClass({
       <div>
 		<h3> Søk etter din kommune: </h3>
         <input type="text" onChange={this.handleUserInput} value={this.state.userInput} />
-		<Statdisplay kommune={this.state.correctInput} nummer={this.state.correctID} call={validCall}/>
+		<Statdisplay />
       </div>
     );
   }
 });
 
-export default Search
+// Henter staten til loadState inn i variablen load
+function mapStateToProps(state){
+	return {
+		ulykker: state.ulykker
+	}
+}
+
+function matchDispachToProps(dispatch) {
+	return {loadUlykker: (kommunenr) => dispatch(loadUlykker(kommunenr))}
+}
+
+export default connect(mapStateToProps, matchDispachToProps)(Search);
