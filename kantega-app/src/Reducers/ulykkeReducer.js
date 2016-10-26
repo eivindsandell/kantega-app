@@ -3,7 +3,7 @@ const initialState = {
 	ulykker: [],
 
 }
-
+// TODO fikse en true false for initial loading
 export default function ulykkeReducer(state = initialState, action) {
 	switch(action.type){
 		case "LOAD_START":
