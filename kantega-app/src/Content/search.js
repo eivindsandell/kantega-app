@@ -15,7 +15,7 @@ xhttp.onreadystatechange = function() {
 		}
 	};
 
-//Sender api kall
+//Sender synkron api kall med synkron
 xhttp.open("GET", "https://www.vegvesen.no/nvdb/api/v2/omrader/kommuner", false);
 xhttp.send();
 
@@ -50,7 +50,7 @@ var Search = React.createClass({
     return (
       <div>
 		<h3> Søk etter din kommune: </h3>
-        <input type="text" onChange={this.handleUserInput} value={this.state.userInput} />
+        <input className="input" type="text" onChange={this.handleUserInput} value={this.state.userInput} />
 		<Statdisplay />
       </div>
     );

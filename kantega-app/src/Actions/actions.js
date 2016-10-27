@@ -1,5 +1,8 @@
 var jquery = require('jquery');
 
+//For første gang du besøker så ikke antall ulykker kommer opp
+var firstTime = true;
+
 function loadUlykkerStart() {
     return {
         type: "LOAD_START"
@@ -19,6 +22,12 @@ function loadSingleUlykkeSucc(ulykke){
         payload: ulykke
     }
 }
+
+function onFirstLoad() {
+    return {
+        type: "FIRST_LOAD"
+    }
+};
 
 /*
 function loadSingleUlykke(href){
@@ -48,22 +57,28 @@ function _callHref(href, dispatch){
 
 }
 
+// Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
 export function loadUlykker(kommunenr) {
     return (dispatch) =>
     {
-        // Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
+        // Sjekker om det er første gang du kjører funksjonen
+		if (firstTime){
+			dispatch(onFirstLoad());
+			firstTime = false;
+		}
         console.log("Kjører loadUlykker")
         dispatch(loadUlykkerStart());
         var response = ''
         var hrefUlykker = [];
         var dUlykker = 0;
         var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr;
+		// GET på alle ulykker til kommune mer kommunenr du puttet inn
         jquery.get({
             url: apiUrl,
             success: function (res) {
                 return res;
             }
-        }).then(function (res) {
+        }).then(function (res) { 
             console.log("Fått response fra api")
             var obj = res.objekter[1];
             //dispatch(loadSingleUlykke(obj.href))

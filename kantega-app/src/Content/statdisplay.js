@@ -13,11 +13,21 @@ class Statdisplay extends Component{
 	}
 
 	ulykkeList(){
-		if (this.props.ulykker.loading){
-			return <h2>LASTER!</h2>
+		if (this.props.ulykker.firstVisit){
+			return <p></p>
+		}
+		else if (this.props.ulykker.loading){
+			return (
+			<div className="loadingAnimation">
+				<div className="ball1"></div>
+				<div className="ball2"></div>
+				<div className="ball3"></div>
+			</div>
+			)
+					
 		}
 		else{
-			return <p> Antall døde i ulykker: {this.props.ulykker.ulykker.map((ulykke) => ulykke.verdi).reduce((a,b) => a+b, 0)} </p>
+			return <p> Antall døde 1000 tilfeldige ulykker: {this.props.ulykker.ulykker.map((ulykke) => ulykke.verdi).reduce((a,b) => a+b, 0)} </p>
 		}
 	}
   
@@ -25,7 +35,6 @@ class Statdisplay extends Component{
   render() {
     return (
 	<div id="mainContent">
-		<p> Du har skrevet inn kommune: {this.props.kommune} med nummer: {this.props.nummer} </p>
 		<p>________________________________________________________________________________</p>
 		{this.ulykkeList()}
 	</div>

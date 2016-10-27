@@ -1,5 +1,6 @@
 const initialState = {
 	loading: false,
+	firstVisit: true,
 	ulykker: [],
 
 }
@@ -21,6 +22,11 @@ export default function ulykkeReducer(state = initialState, action) {
 			console.log("SINGLE_LOAD_SUCC")
 			return Object.assign({}, state,{
 				ulykker: state.ulykker.slice().concat([action.payload])
+			})
+		case "FIRST_LOAD":
+			console.log("FIRST_LOAD")
+			return Object.assign({}, state,{
+				firstVisit: false
 			})
 		default:
 			return state

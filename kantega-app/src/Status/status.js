@@ -15,9 +15,9 @@ var xhttp = new XMLHttpRequest();
 
 const Status = () => {
     return <div id="about">
-        <p>Denne Appen bruker vegvesenets API som ble sist oppdatert:</p>
+        <p>Denne siden bruker data hentet fra vegvesenet sitt API.</p>
         <div id="apiStatus">
-			<div>{response.datagrunnlag.sist_oppdatert}</div>
+			<div>Dette ble sist oppdatert:  {response.datagrunnlag.sist_oppdatert}</div>
         </div>
     </div>
 }
