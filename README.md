@@ -1,7 +1,9 @@
 Dette er en app som i hovedsak skal bruke vegvesenet sitt API for å regne og fremhvise ulykkesstatistikk for en valgt kommune
 
 Table of Content
-- [Updating to New Releases](#Filstruktur)
+- [Filstruktur](#Filstruktur)
+- [Kjøre Testbuild](#Kjøre-testbuild)
+
 
 ## Filstruktur
 
@@ -33,3 +35,16 @@ kantega-app/
     Satus/
       status.js
 ```
+
+
+## Kjøre testbuild
+
+Last ned repoet til en mappe på pcen. Sørg for at du har node og npm installert. Gå til Kantega-App folderet og kjør:
+
+### npm install
+
+for å installere alle dependecies. Så kjører du:
+
+### npm start
+
+for å kjøre en testbuild. Da vil det åpnes en testserver på localhost:3000
