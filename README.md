@@ -70,7 +70,7 @@ Hoved stylesheetet for hele appen
 #### actions.js
 Denne behandlder hendelser som skal endre på reducers. Inneholder også hovedfunkjsonen for å hente ulykker fra APIet
   
-#### Content
+## Content
 Dette er der hovedinnholdet er. Alt av viewet ligger her
   
 #### search.js
