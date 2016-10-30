@@ -35,6 +35,7 @@ kantega-app/
     Content/
       search.js
       statDisplay.js
+      statsComp.js
     Reducer/
       allReducers,js
       ulykkeReducer.js
@@ -77,7 +78,10 @@ Dette er der hovedinnholdet er. Alt av viewet ligger her
 Søkebaren som kommer på toppen av siden
 
 #### statDisplay.js
-Display komponenten der all infoen om en kommune blir endret
+Komponenten der all  logikken om infoen om en kommune blir gjort
+
+#### statsComp.js
+Komponent som sendes til statDisplay med all info som skal rendres
 
 ## Reducers
 
