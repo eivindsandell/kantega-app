@@ -1,6 +1,7 @@
 var React = require('react');
 import Statdisplay from './statdisplay'
 import {loadUlykker} from '../Actions/actions'
+import {kommuneInfo} from '../Actions/actions'
 import {connect} from 'react-redux';
 
 //Setter variabler
@@ -40,6 +41,7 @@ var Search = React.createClass({
 	if (String(e.target.value) in kList){
 		console.log("Valid kommune")
 		var inp = e.target.value
+		this.props.kommuneInfo(e)
 		this.props.loadUlykker(kList[inp])
 	}
     this.setState({ userInput: e.target.value })
@@ -65,7 +67,10 @@ function mapStateToProps(state){
 }
 
 function matchDispachToProps(dispatch) {
-	return {loadUlykker: (kommunenr) => dispatch(loadUlykker(kommunenr))}
+	return {
+		loadUlykker: (kommunenr) => dispatch(loadUlykker(kommunenr)),
+		kommuneInfo: (kommunenavn) => dispatch(kommuneInfo(kommunenavn))
+	}
 }
 
 export default connect(mapStateToProps, matchDispachToProps)(Search);

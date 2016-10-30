@@ -29,6 +29,8 @@ function onFirstLoad() {
     }
 };
 
+
+
 /*
 function loadSingleUlykke(href){
     return (dispatch) =>{
@@ -55,6 +57,13 @@ function _callHref(href, dispatch){
         dispatch(loadSingleUlykkeSucc(res))
     })
 
+}
+
+function changeKommuneNavn(kommune){
+    return {
+        type: "CHANGE_NAME",
+        payload: kommune
+    }
 }
 
 // Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
@@ -93,5 +102,13 @@ export function loadUlykker(kommunenr) {
             })
 
         });
+    }
+}
+
+export function kommuneInfo(kommunenavn){
+    return (dispatch) =>
+    {
+        console.log("Kjører kommuneInfo")
+        dispatch(changeKommuneNavn(kommunenavn))
     }
 }

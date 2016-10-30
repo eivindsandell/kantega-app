@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-
+import StatsComp from './statsComp'
 
 
 
@@ -27,7 +27,7 @@ class Statdisplay extends Component{
 					
 		}
 		else{
-			return <p> Antall døde 1000 tilfeldige ulykker: {this.props.ulykker.ulykker.map((ulykke) => ulykke.verdi).reduce((a,b) => a+b, 0)} </p>
+			return <StatsComp />//<p> Antall døde 1000 "tilfeldige" ulykker: {this.props.ulykker.ulykker.map((ulykke) => ulykke.verdi).reduce((a,b) => a+b, 0)} </p>
 		}
 	}
   
