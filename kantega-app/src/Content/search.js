@@ -41,7 +41,7 @@ var Search = React.createClass({
 	if (String(e.target.value) in kList){
 		console.log("Valid kommune")
 		var inp = e.target.value
-		this.props.kommuneInfo(e)
+		this.props.kommuneInfo(inp)
 		this.props.loadUlykker(kList[inp])
 	}
     this.setState({ userInput: e.target.value })

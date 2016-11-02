@@ -1,17 +1,14 @@
 const initialState = {
-    navn: "Default",
+    kommunenavn: "Default",
     nummer: 0,
 
 }
 
-export default function ulykkeReducer(state = initialState, action) {
+export default function kommuneReducer(state = initialState, action) {
     switch(action.type){
         case "CHANGE_NAME":
             console.log("CHANGE_NAME")
-            //TODO fikse denne
-            return Object.assign({}, state,{
-                navn: action.payload
-            })
+            return Object.assign({}, state, action.payload)
         default:
             return state
     }

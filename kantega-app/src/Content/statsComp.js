@@ -14,7 +14,7 @@ class StatsComp extends Component{
     render() {
         return (
             <div id="statShow">
-            <p> Kommune: {/*this.props.kommune.kommune.navn*/}</p>
+            <p> Kommune: {this.props.kommune.kommunenavn}</p>
         <p> Antall døde 1000 "tilfeldige" ulykker: {this.props.ulykker.ulykker.map((ulykke) => ulykke.verdi).reduce((a,b) => a+b, 0)} </p>
         </div>
     );

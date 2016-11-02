@@ -59,10 +59,10 @@ function _callHref(href, dispatch){
 
 }
 
-function changeKommuneNavn(kommune){
+function changeKommuneNavn(kommunenavn, kommunenr){
     return {
         type: "CHANGE_NAME",
-        payload: kommune
+        payload: {kommunenavn: kommunenavn, kommunenr: kommunenr}
     }
 }
 
@@ -105,10 +105,10 @@ export function loadUlykker(kommunenr) {
     }
 }
 
-export function kommuneInfo(kommunenavn){
+export function kommuneInfo(kommunenavn, kommunenr){
     return (dispatch) =>
     {
         console.log("Kjører kommuneInfo")
-        dispatch(changeKommuneNavn(kommunenavn))
+        dispatch(changeKommuneNavn(kommunenavn, kommunenr))
     }
 }
