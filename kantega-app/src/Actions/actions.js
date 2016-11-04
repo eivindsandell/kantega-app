@@ -80,7 +80,7 @@ export function loadUlykker(kommunenr) {
         var response = ''
         var hrefUlykker = [];
         var dUlykker = 0;
-        var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr;
+        var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper";
 		// GET på alle ulykker til kommune mer kommunenr du puttet inn
         jquery.get({
             url: apiUrl,
@@ -88,19 +88,8 @@ export function loadUlykker(kommunenr) {
                 return res;
             }
         }).then(function (res) { 
-            console.log("Fått response fra api")
-            var obj = res.objekter[1];
-            //dispatch(loadSingleUlykke(obj.href))
-            for (var i = 0; i < res.objekter.length; i++) {
-                var obj = res.objekter[i];
-                hrefUlykker.push(_callHref(obj.href, dispatch))
-
-            }
-            Promise.all(hrefUlykker).then( () => {
-                console.log("Finished fetching ALL egenskaper")
-                dispatch(loadUlykkerSucc())
-            })
-
+			console.log(res)
+			dispatch(loadUlykkerSucc())
         });
     }
 }
