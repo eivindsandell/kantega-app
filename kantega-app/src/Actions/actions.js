@@ -66,6 +66,29 @@ function changeKommuneNavn(kommunenavn, kommunenr){
     }
 }
 
+function antallDode(res){
+	var egenskaperLoad = true;
+			var egenskaperCounter = 0;
+			var debuggUlykker = 0;
+			
+			for (var i = 0; i < res.metadata.returnert; i++) {
+				egenskaperLoad = true
+				egenskaperCounter = 0;
+				while(egenskaperLoad){
+					if (typeof(res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi) != 'undefined') {
+						if (res.objekter[i.toString()].egenskaper[egenskaperCounter].navn == "Antall drepte i ulykken"){
+							debuggUlykker += res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi
+							egenskaperLoad = false
+						}
+						else{
+							egenskaperCounter++;
+						}
+					}
+				}
+			}
+			console.log("Antall døde: " + debuggUlykker)
+}
+
 // Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
 export function loadUlykker(kommunenr) {
     return (dispatch) =>
@@ -80,7 +103,7 @@ export function loadUlykker(kommunenr) {
         var response = ''
         var hrefUlykker = [];
         var dUlykker = 0;
-        var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr;
+        var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper";
 		// GET på alle ulykker til kommune mer kommunenr du puttet inn
         jquery.get({
             url: apiUrl,
@@ -88,23 +111,11 @@ export function loadUlykker(kommunenr) {
                 return res;
             }
         }).then(function (res) { 
-            console.log("Fått response fra api")
-            var obj = res.objekter[1];
-            //dispatch(loadSingleUlykke(obj.href))
-            for (var i = 0; i < res.objekter.length; i++) {
-                var obj = res.objekter[i];
-                hrefUlykker.push(_callHref(obj.href, dispatch))
-
-            }
-            Promise.all(hrefUlykker).then( () => {
-                console.log("Finished fetching ALL egenskaper")
-                dispatch(loadUlykkerSucc())
-            })
-
+			antallDode(res)
+			dispatch(loadUlykkerSucc())
         });
     }
 }
-
 export function kommuneInfo(kommunenavn, kommunenr){
     return (dispatch) =>
     {
