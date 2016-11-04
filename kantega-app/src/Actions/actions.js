@@ -89,6 +89,8 @@ function antallDode(res){
 			console.log("Antall døde: " + debuggUlykker)
 }
 
+
+
 // Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
 export function loadUlykker(kommunenr) {
     return (dispatch) =>
