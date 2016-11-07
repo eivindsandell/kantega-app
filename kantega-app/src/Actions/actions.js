@@ -2,6 +2,7 @@ var jquery = require('jquery');
 
 //For første gang du besøker så ikke antall ulykker kommer opp
 var firstTime = true;
+var debuggUlykker = 0;
 
 function loadUlykkerStart() {
     return {
@@ -29,7 +30,12 @@ function onFirstLoad() {
     }
 };
 
-
+function addUlykker(antall){
+    return {
+        type: "ADD_ULYKKE",
+        payload: antall
+    }
+}
 
 /*
 function loadSingleUlykke(href){
@@ -69,7 +75,7 @@ function changeKommuneNavn(kommunenavn, kommunenr){
 function antallDode(res){
 	var egenskaperLoad = true;
 			var egenskaperCounter = 0;
-			var debuggUlykker = 0;
+
 			
 			for (var i = 0; i < res.metadata.returnert; i++) {
 				egenskaperLoad = true
@@ -86,7 +92,8 @@ function antallDode(res){
 					}
 				}
 			}
-			console.log("Antall døde: " + debuggUlykker)
+	console.log("Antall døde: " + debuggUlykker)
+	return debuggUlykker		
 }
 
 
@@ -95,6 +102,7 @@ function antallDode(res){
 export function loadUlykker(kommunenr) {
     return (dispatch) =>
     {
+		debuggUlykker = 0;
         // Sjekker om det er første gang du kjører funksjonen
 		if (firstTime){
 			dispatch(onFirstLoad());
@@ -107,21 +115,23 @@ export function loadUlykker(kommunenr) {
         var dUlykker = 0;
         var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper";
 		// GET på alle ulykker til kommune mer kommunenr du puttet inn
+		
         jquery.get({
             url: apiUrl,
             success: function (res) {
                 return res;
             }
         }).then(function (res) { 
-			antallDode(res)
+			dispatch(addUlykker(antallDode(res)))
 			dispatch(loadUlykkerSucc())
         });
-    }
+	}
 }
 export function kommuneInfo(kommunenavn, kommunenr){
     return (dispatch) =>
     {
         console.log("Kjører kommuneInfo")
+		console.log(kommunenavn + " " + kommunenr)
         dispatch(changeKommuneNavn(kommunenavn, kommunenr))
     }
 }

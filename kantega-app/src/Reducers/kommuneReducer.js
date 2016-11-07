@@ -1,6 +1,6 @@
 const initialState = {
     kommunenavn: "Default",
-    nummer: 0,
+    kommunenr: 0,
 
 }
 
