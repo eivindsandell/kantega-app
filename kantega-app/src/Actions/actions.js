@@ -65,6 +65,23 @@ function _callHref(href, dispatch){
 
 }
 
+function getApi(apiUrl, dispatch){
+    jquery.get({
+        url: apiUrl,
+        success: function (res) {
+            return res;
+        }
+    }).then(function (res) {
+        if (res.metadata.returnert == 0){
+            dispatch(loadUlykkerSucc())
+        }else{
+            dispatch(addUlykker(antallDode(res)))
+            getApi(res.metadata.neste.href, dispatch)
+        }
+
+    });
+}
+
 function changeKommuneNavn(kommunenavn, kommunenr){
     return {
         type: "CHANGE_NAME",
@@ -110,23 +127,12 @@ export function loadUlykker(kommunenr) {
 		}
         console.log("Kjører loadUlykker")
         dispatch(loadUlykkerStart());
-        var response = ''
-        var hrefUlykker = [];
-        var dUlykker = 0;
         var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper";
 		// GET på alle ulykker til kommune mer kommunenr du puttet inn
-		
-        jquery.get({
-            url: apiUrl,
-            success: function (res) {
-                return res;
-            }
-        }).then(function (res) { 
-			dispatch(addUlykker(antallDode(res)))
-			dispatch(loadUlykkerSucc())
-        });
+		getApi(apiUrl, dispatch)
 	}
 }
+
 export function kommuneInfo(kommunenavn, kommunenr){
     return (dispatch) =>
     {
