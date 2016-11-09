@@ -3,19 +3,20 @@ var jquery = require('jquery');
 //For første gang du besøker så ikke antall ulykker kommer opp
 var firstTime = true;
 var debuggUlykker = 0;
+var antallUlykkerFraApi = 0;
 
 function loadUlykkerStart() {
     return {
         type: "LOAD_START"
     }
-};
+}
 
 function loadUlykkerSucc(ulykker) {
     return {
         type: "LOAD_SUCC",
         payload: ulykker
     }
-};
+}
 
 function loadSingleUlykkeSucc(ulykke){
     return {
@@ -28,7 +29,7 @@ function onFirstLoad() {
     return {
         type: "FIRST_LOAD"
     }
-};
+}
 
 function addUlykker(antall){
     return {
@@ -37,34 +38,36 @@ function addUlykker(antall){
     }
 }
 
-/*
-function loadSingleUlykke(href){
-    return (dispatch) =>{
-        jquery.get({
-            url: href,
-            success: function (res) {
-                return res;
-            }
-        }).then(function (res) {
-           dispatch(loadSingleUlykkeSucc(res))
-        })
+function addDodsfall(antall){
+    return {
+        type: "ADD_DODSFALL",
+        payload: antall
     }
 }
-*/
 
-function _callHref(href, dispatch){
-    return jquery.get({
-        url: href+"/egenskaper/5070",
-        success: function (res) {
-            return res;
-        }
-    }).then( (res) => {
-        console.log("Finished fetching egenskaper")
-        dispatch(loadSingleUlykkeSucc(res))
-    })
-
+function resetUlykkeReducer() {
+    return {
+        type: "RESET_REDUCER"
+    }
 }
 
+
+
+function changeKommuneNavn(kommunenavn, kommunenr){
+    return {
+        type: "CHANGE_NAME",
+        payload: {kommunenavn: kommunenavn, kommunenr: kommunenr}
+    }
+}
+
+
+/**
+ *
+ * @param apiUrl - urlen som skal kalles i apiet
+ * @param dispatch - sørger for at vi kan bruke dispatch
+ * Denne funksjonen kaller på API et med urlen og brukes neste hrefen til kalle seg selv rekursivt til det ikke er flere
+ * objeter som blir returnet av API et
+ */
 function getApi(apiUrl, dispatch){
     jquery.get({
         url: apiUrl,
@@ -75,20 +78,23 @@ function getApi(apiUrl, dispatch){
         if (res.metadata.returnert == 0){
             dispatch(loadUlykkerSucc())
         }else{
-            dispatch(addUlykker(antallDode(res)))
+            dispatch(addUlykker(res.metadata.returnert))
+            dispatch(addDodsfall(antallDode(res)))
             getApi(res.metadata.neste.href, dispatch)
         }
 
     });
 }
 
-function changeKommuneNavn(kommunenavn, kommunenr){
-    return {
-        type: "CHANGE_NAME",
-        payload: {kommunenavn: kommunenavn, kommunenr: kommunenr}
-    }
+function antallUlykker(antall){
+    return antallUlykkerFraApi += antall
 }
 
+/**
+ *
+ * @param res tar in en JSON resposne objekt fra API et
+ * @returns {number} en INT med hvor mange som døde i det spesifikke JSON objektet
+ */
 function antallDode(res){
 	var egenskaperLoad = true;
 			var egenskaperCounter = 0;
@@ -98,28 +104,39 @@ function antallDode(res){
 				egenskaperLoad = true
 				egenskaperCounter = 0;
 				while(egenskaperLoad){
-					if (typeof(res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi) != 'undefined') {
-						if (res.objekter[i.toString()].egenskaper[egenskaperCounter].navn == "Antall drepte i ulykken"){
-							debuggUlykker += res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi
-							egenskaperLoad = false
-						}
-						else{
-							egenskaperCounter++;
-						}
-					}
+				        console.log(i + " " + egenskaperCounter)
+                    try {
+                        if (res.objekter[i.toString()].egenskaper[egenskaperCounter].id == 5070) {
+                            debuggUlykker += res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi
+                            egenskaperLoad = false
+                        }
+
+                        else {
+                            egenskaperCounter++;
+                        }
+                    }
+                    catch (err){
+                            egenskaperLoad = false
+						    console.log(err.message)
+                    }
 				}
 			}
 	console.log("Antall døde: " + debuggUlykker)
 	return debuggUlykker		
 }
 
-
-
-// Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
+/**
+ *
+ * @param kommunenr et unikt nummer for en kommune
+ * Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
+ */
 export function loadUlykker(kommunenr) {
     return (dispatch) =>
     {
+        // Resetter alt som har med den forrige skrevne kommunen
+        dispatch(resetUlykkeReducer())
 		debuggUlykker = 0;
+        antallUlykkerFraApi = 0;
         // Sjekker om det er første gang du kjører funksjonen
 		if (firstTime){
 			dispatch(onFirstLoad());
@@ -133,6 +150,12 @@ export function loadUlykker(kommunenr) {
 	}
 }
 
+/**
+ *
+ * @param kommunenavn - navnet til valgt kommune
+ * @param kommunenr - unike nr for valgt kommune
+ * Lagrer infoen i kommune reducer slik at det kan hentes om nødvendig
+ */
 export function kommuneInfo(kommunenavn, kommunenr){
     return (dispatch) =>
     {

@@ -10,16 +10,16 @@ class StatsComp extends Component{
 
 
     // Det som skal sendes til stat display
-    //TODO Fikse kommune navn
     render() {
         return (
             <div id="statShow">
-            <p> <b>Kommune:</b> {this.props.kommune.kommunenavn}         <b>KommuneNr:</b> {this.props.kommune.kommunenr}</p>
-        <p> Antall døde 1000 "tilfeldige" ulykker: {this.props.ulykker.ulykker} </p>
-        </div>
-    );
+                <p><b>Kommune:</b> {this.props.kommune.kommunenavn}         <b>KommuneNr:</b> {this.props.kommune.kommunenr}</p>
+                <p> Siden har søkt igjennom {this.props.ulykker.ulykker} trafikkulykker i din skrevne kommune og funnet: </p>
+                <p> Antall døde: {this.props.ulykker.dodsfall} </p>
+            </div>
+        );
+        }
     }
-}
 
 //--------------------------------------------------------------------------------------------------------
 // Henter staten til loadState inn i variablen load
