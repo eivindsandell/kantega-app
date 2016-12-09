@@ -4,6 +4,7 @@ var jquery = require('jquery');
 var firstTime = true;
 var debuggUlykker = 0;
 var antallUlykkerFraApi = 0;
+var vegStat = {};
 
 function loadUlykkerStart() {
     return {
@@ -15,13 +16,6 @@ function loadUlykkerSucc(ulykker) {
     return {
         type: "LOAD_SUCC",
         payload: ulykker
-    }
-}
-
-function loadSingleUlykkeSucc(ulykke){
-    return {
-        type: "SINGLE_LOAD_SUCC",
-        payload: ulykke
     }
 }
 
@@ -60,6 +54,13 @@ function changeKommuneNavn(kommunenavn, kommunenr){
     }
 }
 
+function vegStatUpdate(dict) {
+    return {
+        type: "VEG_STAT",
+        payload: dict
+    }
+}
+
 
 /**
  *
@@ -80,6 +81,7 @@ function getApi(apiUrl, dispatch){
         }else{
             dispatch(addUlykker(res.metadata.returnert))
             dispatch(addDodsfall(antallDode(res)))
+            dispatch(vegStatUpdate(vegNavn(res)))
             getApi(res.metadata.neste.href, dispatch)
         }
 
@@ -91,20 +93,60 @@ function antallUlykker(antall){
 }
 
 /**
+ * @param tar in et json objekt
+ * @return ...
+ */
+function vegNavn(res) {
+    var vegLoad = true;
+    var vegCounter = 0;
+
+
+    for (var i = 0; i < res.metadata.returnert; i++) {
+        vegLoad = true
+        vegCounter = 0;
+        while(vegLoad){
+            try {
+                // TODO fikse funksjon her
+                if (res.objekter[i.toString()].egenskaper[vegCounter].id == 5119) {
+                    // Med RegExp for å fjerne alle overflødige karakterer
+                    if (String(res.objekter[i.toString()].egenskaper[vegCounter].verdi).replace(/[.,/]/g, "" ).replace("vegen", "veien").split(" v ")[0].split(" V ")[0].split(" x ")[0].split(" X ")[0] in vegStat){
+                        vegStat[String(res.objekter[i.toString()].egenskaper[vegCounter].verdi).replace(/[.,/]/g, "" ).replace("vegen", "veien").split(" v ")[0].split(" V ")[0].split(" x ")[0].split(" X ")[0]] += 1;
+                    }
+                    else {
+                        vegStat[String(res.objekter[i.toString()].egenskaper[vegCounter].verdi).replace(/[.,/"]/g, "" ).replace("vegen", "veien").split(" v ")[0].split(" V ")[0].split(" x ")[0].split(" X ")[0]] = 1;
+                    }
+                    vegLoad = false
+                }
+
+                else {
+                    vegCounter++;
+                }
+
+            }
+            catch (err){
+                vegLoad = false
+               // console.log(err.message)
+            }
+        }
+    }
+    return vegStat
+}
+
+/**
  *
  * @param res tar in en JSON resposne objekt fra API et
  * @returns {number} en INT med hvor mange som døde i det spesifikke JSON objektet
  */
 function antallDode(res){
 	var egenskaperLoad = true;
-			var egenskaperCounter = 0;
+    var egenskaperCounter = 0;
 
 			
 			for (var i = 0; i < res.metadata.returnert; i++) {
 				egenskaperLoad = true
 				egenskaperCounter = 0;
 				while(egenskaperLoad){
-				        console.log(i + " " + egenskaperCounter)
+				       // console.log(i + " " + egenskaperCounter)
                     try {
                         if (res.objekter[i.toString()].egenskaper[egenskaperCounter].id == 5070) {
                             debuggUlykker += res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi
@@ -117,11 +159,11 @@ function antallDode(res){
                     }
                     catch (err){
                             egenskaperLoad = false
-						    console.log(err.message)
+						  //  console.log(err.message)
                     }
 				}
 			}
-	console.log("Antall døde: " + debuggUlykker)
+	// console.log("Antall døde: " + debuggUlykker)
 	return debuggUlykker		
 }
 
@@ -137,6 +179,7 @@ export function loadUlykker(kommunenr) {
         dispatch(resetUlykkeReducer())
 		debuggUlykker = 0;
         antallUlykkerFraApi = 0;
+        vegStat = {};
         // Sjekker om det er første gang du kjører funksjonen
 		if (firstTime){
 			dispatch(onFirstLoad());

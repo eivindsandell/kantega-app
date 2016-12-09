@@ -6,8 +6,12 @@ import {connect} from 'react-redux';
 class StatsComp extends Component{
     constructor(props){
         super(props)
+        this.showVegStat = this.showVegStat.bind(this)
     }
 
+    showVegStat(){
+        console.log(this.props.ulykker.vegStat)
+    }
 
     // Det som skal sendes til stat display
     render() {
@@ -16,6 +20,7 @@ class StatsComp extends Component{
                 <p><b>Kommune:</b> {this.props.kommune.kommunenavn}         <b>KommuneNr:</b> {this.props.kommune.kommunenr}</p>
                 <p> Siden har søkt igjennom {this.props.ulykker.ulykker} trafikkulykker i din skrevne kommune og funnet: </p>
                 <p> Antall døde: {this.props.ulykker.dodsfall} </p>
+                <p> Hey: {this.showVegStat()} </p>
             </div>
         );
         }
