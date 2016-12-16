@@ -6,6 +6,11 @@ var debuggUlykker = 0;
 var antallUlykkerFraApi = 0;
 var vegStat = {};
 
+// Top tre variabler
+var first = {name:"placeholder", antall:0}
+var second = {name:"placeholder", antall:0}
+var third = {name:"placeholder", antall:0}
+
 function loadUlykkerStart() {
     return {
         type: "LOAD_START"
@@ -81,7 +86,7 @@ function getApi(apiUrl, dispatch){
         }else{
             dispatch(addUlykker(res.metadata.returnert))
             dispatch(addDodsfall(antallDode(res)))
-            dispatch(vegStatUpdate(vegNavn(res)))
+            dispatch(vegStatUpdate(sortVegNavn(vegNavn(res))))
             getApi(res.metadata.neste.href, dispatch)
         }
 
@@ -91,6 +96,51 @@ function getApi(apiUrl, dispatch){
 function antallUlykker(antall){
     return antallUlykkerFraApi += antall
 }
+
+function sortVegNavn(navnObjekt){
+    for (var key in navnObjekt) {
+        if(navnObjekt.hasOwnProperty(key)) {
+
+            // console.log(key + " " + navnObjekt[key])
+            // console.log(Object.values(topTre))
+            if (navnObjekt[key]>first.antall){
+                first.name = key
+                first.antall = navnObjekt[key]
+            }
+        }
+
+    }
+    for (var key in navnObjekt) {
+        if(navnObjekt.hasOwnProperty(key)) {
+
+            // console.log(key + " " + navnObjekt[key])
+            // console.log(Object.values(topTre))
+            if (navnObjekt[key]>second.antall && key != first.name){
+                second.name = key
+                second.antall = navnObjekt[key]
+            }
+        }
+
+    }
+    for (var key in navnObjekt) {
+        if(navnObjekt.hasOwnProperty(key)) {
+
+            // console.log(key + " " + navnObjekt[key])
+            // console.log(Object.values(topTre))
+            if (navnObjekt[key]>third.antall && key != first.name && key != second.name){
+                third.name = key
+                third.antall = navnObjekt[key]
+            }
+        }
+
+    }
+    //console.log(first)
+    //console.log(second)
+    //console.log(third)
+    return {en:first.name, to:second.name, tre:third.name}
+
+}
+
 
 /**
  * @param tar in et json objekt
@@ -180,6 +230,9 @@ export function loadUlykker(kommunenr) {
 		debuggUlykker = 0;
         antallUlykkerFraApi = 0;
         vegStat = {};
+        first = {name:"placeholder", antall:0}
+        second = {name:"placeholder", antall:0}
+        third = {name:"placeholder", antall:0}
         // Sjekker om det er første gang du kjører funksjonen
 		if (firstTime){
 			dispatch(onFirstLoad());

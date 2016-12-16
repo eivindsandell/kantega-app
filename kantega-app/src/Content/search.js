@@ -23,7 +23,7 @@ xhttp.send();
 //Bygger dictionary med kommuner og kommunenr
 for(var i = 0; i < response.length; i++) {
     var obj = response[i];
-	kList[obj.navn] = obj.nummer;
+	kList[obj.navn.toLowerCase()] = obj.nummer;
 }
 console.log(kList)
 
@@ -32,19 +32,26 @@ console.log(kList)
 var Search = React.createClass({
 	
   getInitialState: function () {
-	return {userInput: '',correctInput: '', correctID: ''} 
+	return {userInput: ''}
   },
+
+
+	updateView: function (e) {
+		this.setState({ userInput: e.target.value })
+	},
 
   
   // Behandler user input for kommune søkebaren
   handleUserInput: function(e){
-	if (String(e.target.value) in kList){
+	if (String(e.target.value.toLowerCase()) in kList){
 		console.log("Valid kommune")
-		var inp = e.target.value
+		var inp = e.target.value.toLowerCase()
 		this.props.kommuneInfo(inp, kList[inp])
 		this.props.loadUlykker(kList[inp])
 	}
-    this.setState({ userInput: e.target.value })
+    else{
+    	console.log("Ikke gyldig")
+	}
   },
   
 	// Rendrer det som skal til viewet
@@ -52,7 +59,7 @@ var Search = React.createClass({
     return (
       <div>
 		<h3> Søk etter din kommune: </h3>
-        <input className="input" type="text" onChange={this.handleUserInput} value={this.state.userInput} />
+        <input className="input" type="text" onChange={this.updateView} value={this.state.userInput} /> <button value={this.state.userInput} onClick={this.handleUserInput}> Søk </button>
 		<Statdisplay />
       </div>
     );

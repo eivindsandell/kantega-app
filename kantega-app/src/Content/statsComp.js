@@ -9,8 +9,19 @@ class StatsComp extends Component{
         this.showVegStat = this.showVegStat.bind(this)
     }
 
-    showVegStat(){
-        console.log(this.props.ulykker.vegStat)
+    showVegStat(ind){
+        var toString
+        if (ind == "en"){
+            toString = this.props.ulykker.vegStat.en.toString()
+        }
+        else if (ind == "to"){
+            toString = this.props.ulykker.vegStat.to.toString()
+        }
+        else{
+            toString = this.props.ulykker.vegStat.tre.toString()
+        }
+
+        return toString
     }
 
     // Det som skal sendes til stat display
@@ -20,7 +31,11 @@ class StatsComp extends Component{
                 <p><b>Kommune:</b> {this.props.kommune.kommunenavn}         <b>KommuneNr:</b> {this.props.kommune.kommunenr}</p>
                 <p> Siden har søkt igjennom {this.props.ulykker.ulykker} trafikkulykker i din skrevne kommune og funnet: </p>
                 <p> Antall døde: {this.props.ulykker.dodsfall} </p>
-                <p> Hey: {this.showVegStat()} </p>
+                <p> De tre veiene med flest ulykker: </p>
+                <p> 1: {this.showVegStat("en")} </p>
+                <p> 2: {this.showVegStat("to")} </p>
+                <p> 3: {this.showVegStat("tre")} </p>
+
             </div>
         );
         }
