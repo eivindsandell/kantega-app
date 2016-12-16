@@ -50,7 +50,7 @@ var Search = React.createClass({
 		this.props.loadUlykker(kList[inp])
 	}
     else{
-    	console.log("Ikke gyldig")
+    	console.log("Ikke gyldig TODO LEGGE INN FEEDBACK")
 	}
   },
   

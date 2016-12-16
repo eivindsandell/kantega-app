@@ -2,8 +2,12 @@ var jquery = require('jquery');
 
 //For første gang du besøker så ikke antall ulykker kommer opp
 var firstTime = true;
+// Brukes til å telle antall døde igjennom funksjonen
 var debuggUlykker = 0;
+// Teller hvor mange objekter vi har gått igjennom
 var antallUlykkerFraApi = 0;
+
+// Liste med alle veger, med navn
 var vegStat = {};
 
 // Top tre variabler
