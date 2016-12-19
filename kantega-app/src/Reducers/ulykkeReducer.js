@@ -3,6 +3,8 @@ const initialState = {
 	firstVisit: true,
 	ulykker: 0,
 	dodsfall: 0,
+	dodMorkLys: 0,
+	ulykkeMorkLys: 0,
 	vegStat: {},
 
 }
@@ -35,11 +37,24 @@ export default function ulykkeReducer(state = initialState, action) {
 			return Object.assign({}, state,{
 				dodsfall: state.dodsfall + action.payload
 			})
+		case "ADD_DODMORKLYS":
+			console.log("ADD_DODMORKLYS")
+			return Object.assign({}, state,{
+				dodMorkLys: state.dodMorkLys + action.payload
+			})
+		case "ADD_ULYKKEMORKLYS":
+			console.log("ADD_ULYKKEMORKLYS")
+			return Object.assign({}, state,{
+				ulykkeMorkLys: state.ulykkeMorkLys + action.payload
+			})
 		case "RESET_REDUCER":
 			console.log("RESET_REDUCER")
 			return Object.assign({}, state,{
+				ulykker: 0,
 				dodsfall: 0,
-				ulykker: 0
+				dodMorkLys: 0,
+				ulykkeMorkLys: 0,
+				vegStat: {},
 			})
 		case "VEG_STAT":
 			console.log("VEG_STAT")

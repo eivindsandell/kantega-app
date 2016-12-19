@@ -10,6 +10,8 @@ var antallUlykkerFraApi = 0;
 // Liste med alle veger, med navn
 var vegStat = {};
 
+// Variabler for lysberegning
+
 // Top tre variabler
 var first = {name:"placeholder", antall:0}
 var second = {name:"placeholder", antall:0}
@@ -88,6 +90,7 @@ function getApi(apiUrl, dispatch){
         if (res.metadata.returnert == 0){
             dispatch(loadUlykkerSucc())
         }else{
+            lys(res, dispatch)
             dispatch(addUlykker(res.metadata.returnert))
             dispatch(addDodsfall(antallDode(res)))
             dispatch(vegStatUpdate(sortVegNavn(vegNavn(res))))
@@ -101,6 +104,77 @@ function antallUlykker(antall){
     return antallUlykkerFraApi += antall
 }
 
+/**
+ *
+ * @param obj - en spesifikk ulykke
+ * @returns true eller false
+ * Helper funksjon for å finne ut om noen døde ved en spesifikk ulykke
+ */
+function checkIfDod(obj) {
+    var loading = true
+    var counter = 0
+    while (loading){
+        try {
+            if (obj.egenskaper[counter].id == 5070 && obj.egenskaper[counter].verdi != 0){
+                return true
+            }
+            else{
+                counter++;
+            }
+        }
+        catch (err){
+            return false
+        }
+}
+
+}
+
+/**
+ *
+ * @param res
+ * @param dispatch
+ * @returns...
+ */
+function lys(res, dispatch) {
+    var lysLoad = true;
+    var lysCounter = 0;
+    var dodLys = 0;
+    var ulykkeLys = 0;
+
+    for (var i = 0; i < res.metadata.returnert; i++) {
+        lysLoad = true
+        lysCounter = 0;
+        while(lysLoad){
+            try {
+                if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && checkIfDod(res.objekter[i.toString()])) {
+                    // TODO denne burde bare slå ut om det er dårlig lysforhold og noen har dødd
+                    lysLoad = false
+                }
+                else if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && !checkIfDod(res.objekter[i.toString()])){
+                    // TODO denne burde bare slå ut om noen ikke har dødd men det er mørkt lys
+                }
+
+                else {
+                    lysCounter++;
+                }
+
+            }
+            catch (err){
+                lysLoad = false
+                // console.log(err.message)
+            }
+        }
+    }
+    return "Hello world"
+}
+
+
+
+/**
+ *
+ * @param navnObjekt - et json object fra vegnavn() funksjonen
+ * @returns Top tre veger med ulykker {{en: string, to: string, tre: string}}
+ */
 function sortVegNavn(navnObjekt){
     for (var key in navnObjekt) {
         if(navnObjekt.hasOwnProperty(key)) {
@@ -148,7 +222,7 @@ function sortVegNavn(navnObjekt){
 
 /**
  * @param tar in et json objekt
- * @return ...
+ * @return En dict med vegvanv som key og antall ulykker pr veg som value
  */
 function vegNavn(res) {
     var vegLoad = true;
@@ -160,7 +234,6 @@ function vegNavn(res) {
         vegCounter = 0;
         while(vegLoad){
             try {
-                // TODO fikse funksjon her
                 if (res.objekter[i.toString()].egenskaper[vegCounter].id == 5119) {
                     // Med RegExp for å fjerne alle overflødige karakterer
                     if (String(res.objekter[i.toString()].egenskaper[vegCounter].verdi).replace(/[.,/]/g, "" ).replace("vegen", "veien").split(" v ")[0].split(" V ")[0].split(" x ")[0].split(" X ")[0] in vegStat){
