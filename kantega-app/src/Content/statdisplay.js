@@ -27,7 +27,7 @@ class Statdisplay extends Component{
 					
 		}
 		else{
-			return <StatsComp />//<p> Antall døde 1000 "tilfeldige" ulykker: {this.props.ulykker.ulykker.map((ulykke) => ulykke.verdi).reduce((a,b) => a+b, 0)} </p>
+			return <StatsComp />
 		}
 	}
   

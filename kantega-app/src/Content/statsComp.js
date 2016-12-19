@@ -28,8 +28,7 @@ class StatsComp extends Component{
     render() {
         return (
             <div id="statShow">
-                <p><b>Kommune:</b> {this.props.kommune.kommunenavn}         <b>KommuneNr:</b> {this.props.kommune.kommunenr}</p>
-                <p> Siden har søkt igjennom {this.props.ulykker.ulykker} trafikkulykker i din skrevne kommune og funnet: </p>
+                <p> Siden har søkt igjennom {this.props.ulykker.ulykker} trafikkulykker i {this.props.kommune.kommunenavn.charAt(0).toUpperCase() + this.props.kommune.kommunenavn.slice(1)} og har følgende statistikk: </p>
                 <p> Antall døde: {this.props.ulykker.dodsfall} </p>
                 <p> De tre veiene med flest ulykker: </p>
                 <p> 1: {this.showVegStat("en")} </p>

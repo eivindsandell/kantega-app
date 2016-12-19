@@ -146,12 +146,13 @@ function lys(res, dispatch) {
         lysCounter = 0;
         while(lysLoad){
             try {
-                if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && checkIfDod(res.objekter[i.toString()])) {
+                if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && checkIfDod(res.objekter[i.toString()]) == true ) {
                     // TODO denne burde bare slå ut om det er dårlig lysforhold og noen har dødd
                     lysLoad = false
                 }
-                else if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && !checkIfDod(res.objekter[i.toString()])){
+                else if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && checkIfDod(res.objekter[i.toString()]) == false ){
                     // TODO denne burde bare slå ut om noen ikke har dødd men det er mørkt lys
+                    lysLoad = false
                 }
 
                 else {
