@@ -11,6 +11,8 @@ var antallUlykkerFraApi = 0;
 var vegStat = {};
 
 // Variabler for lysberegning
+var badLys = ["Mørkt uten vegbelysning", "Tussmørke, skumring"]
+var braLys = ["Dagslys", "Mørkt med vegbelysning", "Ukjent"]
 
 // Top tre variabler
 var first = {name:"placeholder", antall:0}
@@ -56,6 +58,41 @@ function resetUlykkeReducer() {
     }
 }
 
+function addDodMorkLys(antall){
+    return {
+        type: "ADD_DODMORKLYS",
+        payload: antall
+    }
+}
+
+function addUlykkeMorkLys(antall){
+    return {
+        type: "ADD_ULYKKEMORKLYS",
+        payload: antall
+    }
+}
+
+function addDodLys(antall){
+    return {
+        type: "ADD_DODLYS",
+        payload: antall
+    }
+}
+
+function addUlykkeLys(antall){
+    return {
+        type: "ADD_ULYKKELYS",
+        payload: antall
+    }
+}
+
+function addDUlykke(antall){
+    return {
+        type: "ADD_DULYKKE",
+        payload: antall
+    }
+}
+
 
 
 function changeKommuneNavn(kommunenavn, kommunenr){
@@ -92,7 +129,7 @@ function getApi(apiUrl, dispatch){
         }else{
             lys(res, dispatch)
             dispatch(addUlykker(res.metadata.returnert))
-            dispatch(addDodsfall(antallDode(res)))
+            dispatch(addDodsfall(antallDode(res, dispatch)))
             dispatch(vegStatUpdate(sortVegNavn(vegNavn(res))))
             getApi(res.metadata.neste.href, dispatch)
         }
@@ -129,6 +166,11 @@ function checkIfDod(obj) {
 
 }
 
+function genreateLysHelp(res){
+
+}
+
+
 /**
  *
  * @param res
@@ -141,6 +183,7 @@ function lys(res, dispatch) {
     var dodLys = 0;
     var ulykkeLys = 0;
 
+
     for (var i = 0; i < res.metadata.returnert; i++) {
         lysLoad = true
         lysCounter = 0;
@@ -148,10 +191,22 @@ function lys(res, dispatch) {
             try {
                 if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && checkIfDod(res.objekter[i.toString()]) == true ) {
                     // TODO denne burde bare slå ut om det er dårlig lysforhold og noen har dødd
+                    if (jquery.inArray(res.objekter[i.toString()].egenskaper[lysCounter].verdi, badLys)){
+                        dispatch(addDodMorkLys(1))
+                    }
+                    else{
+                        dispatch(addDodLys(1))
+                    }
                     lysLoad = false
                 }
                 else if (res.objekter[i.toString()].egenskaper[lysCounter].id == 5080 && checkIfDod(res.objekter[i.toString()]) == false ){
                     // TODO denne burde bare slå ut om noen ikke har dødd men det er mørkt lys
+                    if (jquery.inArray(res.objekter[i.toString()].egenskaper[lysCounter].verdi, badLys)){
+                        dispatch(addUlykkeMorkLys(1))
+                    }
+                    else{
+                        dispatch(addUlykkeLys(1))
+                    }
                     lysLoad = false
                 }
 
@@ -166,7 +221,7 @@ function lys(res, dispatch) {
             }
         }
     }
-    return "Hello world"
+
 }
 
 
@@ -265,7 +320,7 @@ function vegNavn(res) {
  * @param res tar in en JSON resposne objekt fra API et
  * @returns {number} en INT med hvor mange som døde i det spesifikke JSON objektet
  */
-function antallDode(res){
+function antallDode(res, dispatch){
 	var egenskaperLoad = true;
     var egenskaperCounter = 0;
 
@@ -278,6 +333,9 @@ function antallDode(res){
                     try {
                         if (res.objekter[i.toString()].egenskaper[egenskaperCounter].id == 5070) {
                             debuggUlykker += res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi
+                            if (res.objekter[i.toString()].egenskaper[egenskaperCounter].verdi >0){
+                                dispatch(addDUlykke(1))
+                            }
                             egenskaperLoad = false
                         }
 
