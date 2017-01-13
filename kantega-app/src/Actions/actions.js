@@ -1,5 +1,7 @@
 var jquery = require('jquery');
 
+
+var apiUrl = '';
 //For første gang du besøker så ikke antall ulykker kommer opp
 var firstTime = true;
 // Brukes til å telle antall døde igjennom funksjonen
@@ -358,7 +360,7 @@ function antallDode(res, dispatch){
  * @param kommunenr et unikt nummer for en kommune
  * Funksjon som henter alle ulykker fra en kommune og skal populere en liste med linker til alle ulykker
  */
-export function loadUlykker(kommunenr) {
+export function loadUlykker(kommunenr, advAr) {
     return (dispatch) =>
     {
         // Resetter alt som har med den forrige skrevne kommunen
@@ -376,7 +378,13 @@ export function loadUlykker(kommunenr) {
 		}
         console.log("Kjører loadUlykker")
         dispatch(loadUlykkerStart());
-        var apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper";
+		console.log("arstall: " + advAr)
+		if (advAr > 1800){
+			apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper&egenskap=%225055%3E%27" + advAr + "-01-01%27%22";
+		}
+        else{
+			apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper";
+		}
 		// GET på alle ulykker til kommune mer kommunenr du puttet inn
 		getApi(apiUrl, dispatch)
 	}
@@ -391,8 +399,6 @@ export function loadUlykker(kommunenr) {
 export function kommuneInfo(kommunenavn, kommunenr){
     return (dispatch) =>
     {
-        console.log("Kjører kommuneInfo")
-		console.log(kommunenavn + " " + kommunenr)
         dispatch(changeKommuneNavn(kommunenavn, kommunenr))
     }
 }

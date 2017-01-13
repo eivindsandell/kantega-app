@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 var xhttp = new XMLHttpRequest();
 var response = "";
 var kList = {};
+var advAr = 0;
 
 // Setter opp API kall
 xhttp.onreadystatechange = function() {
@@ -16,7 +17,7 @@ xhttp.onreadystatechange = function() {
 		}
 	};
 
-//Sender synkron api kall med synkron
+//Sender synkron api kall
 xhttp.open("GET", "https://www.vegvesen.no/nvdb/api/v2/omrader/kommuner", false);
 xhttp.send();
 
@@ -32,22 +33,28 @@ console.log(kList)
 var Search = React.createClass({
 	
   getInitialState: function () {
-	return {userInput: ''}
+	return {userInput: '', adv: ''}
   },
 
 
 	updateView: function (e) {
 		this.setState({ userInput: e.target.value })
 	},
+	
+	updateView2: function (b) {
+		this.setState({ adv: b.target.value})
+		advAr = parseInt(b.target.value)
+	},
 
   
   // Behandler user input for kommune søkebaren
   handleUserInput: function(e){
+	console.log("advAr: " + advAr)
 	if (String(e.target.value.toLowerCase()) in kList){
 		console.log("Valid kommune")
 		var inp = e.target.value.toLowerCase()
 		this.props.kommuneInfo(inp, kList[inp])
-		this.props.loadUlykker(kList[inp])
+		this.props.loadUlykker(kList[inp], advAr)
 	}
     else{
     	console.log("Ikke gyldig TODO LEGGE INN FEEDBACK")
@@ -60,6 +67,11 @@ var Search = React.createClass({
       <div>
 		<h3> Søk etter din kommune: </h3>
         <input className="input" type="text" onChange={this.updateView} value={this.state.userInput} /> <button value={this.state.userInput} onClick={this.handleUserInput}> Søk </button>
+		<br />
+		<br />
+		Ønsker du å bare se ulykker etter et spesifikt år? 
+		<br />
+		<input className="adv" type="text" onChange={this.updateView2} value={this.state.adv} /> 
 		<Statdisplay />
       </div>
     );
@@ -75,7 +87,7 @@ function mapStateToProps(state){
 
 function matchDispachToProps(dispatch) {
 	return {
-		loadUlykker: (kommunenr) => dispatch(loadUlykker(kommunenr)),
+		loadUlykker: (kommunenr, advAr) => dispatch(loadUlykker(kommunenr, advAr)),
 		kommuneInfo: (kommunenavn, kommunenr) => dispatch(kommuneInfo(kommunenavn, kommunenr))
 	}
 }
