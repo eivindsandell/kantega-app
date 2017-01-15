@@ -111,6 +111,12 @@ function vegStatUpdate(dict) {
     }
 }
 
+function advSok(ar){
+    return {
+        type: "ADV_SOK",
+        payload: ar
+    }
+}
 
 /**
  *
@@ -376,9 +382,10 @@ export function loadUlykker(kommunenr, advAr) {
 			dispatch(onFirstLoad());
 			firstTime = false;
 		}
-        console.log("Kjører loadUlykker")
+       // console.log("Kjører loadUlykker")
         dispatch(loadUlykkerStart());
-		console.log("arstall: " + advAr)
+		//console.log("arstall: " + advAr)
+		dispatch(advSok(advAr))
 		if (advAr > 1800){
 			apiUrl = "https://www.vegvesen.no/nvdb/api/v2/vegobjekter/570?kommune=" + kommunenr + "&inkluder=egenskaper&egenskap=%225055%3E%27" + advAr + "-01-01%27%22";
 		}

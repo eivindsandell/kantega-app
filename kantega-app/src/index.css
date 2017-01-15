@@ -2,13 +2,20 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: #666666;
+ 
+  background: rgb(1,72,153); /* Old browsers */
+  background: -moz-linear-gradient(left, rgba(1,72,153,1) 0%, rgba(32,124,202,1) 51%, rgba(1,72,153,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, rgba(1,72,153,1) 0%,rgba(32,124,202,1) 51%,rgba(1,72,153,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, rgba(1,72,153,1) 0%,rgba(32,124,202,1) 51%,rgba(1,72,153,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#014899', endColorstr='#014899',GradientType=1 );
+
   color: white;
 }
 
 .input {
 	
 }
+
 
 
 .loadingAnimation {

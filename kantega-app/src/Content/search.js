@@ -3,6 +3,7 @@ import Statdisplay from './statdisplay'
 import {loadUlykker} from '../Actions/actions'
 import {kommuneInfo} from '../Actions/actions'
 import {connect} from 'react-redux';
+import './searchCss.css';
 
 //Setter variabler
 var xhttp = new XMLHttpRequest();
@@ -49,9 +50,9 @@ var Search = React.createClass({
   
   // Behandler user input for kommune søkebaren
   handleUserInput: function(e){
-	console.log("advAr: " + advAr)
+	//console.log("advAr: " + advAr)
 	if (String(e.target.value.toLowerCase()) in kList){
-		console.log("Valid kommune")
+		//console.log("Valid kommune")
 		var inp = e.target.value.toLowerCase()
 		this.props.kommuneInfo(inp, kList[inp])
 		this.props.loadUlykker(kList[inp], advAr)
@@ -64,7 +65,10 @@ var Search = React.createClass({
 	// Rendrer det som skal til viewet
   render: function () {
     return (
-      <div>
+      <div className="Search">
+	  Denne nettsiden lar deg søke opp noe ulykkesstatistikk for alle kommunene i Norge. Fokuset til statistikken er å vise deg hvor mange prosent av ulykkene som har funnet sted under dårlige lysforhold. 
+	  Denne siden er ingen fasit, og henter kun ut og viser rådata fra Vegvesenet sitt API. Dataen som hentes er datert helt tilbake til da Vegvesenet begynte å registrere ulykker. 
+	  Større byer kan også ha lengre lastetid fordi det er snakk om store mengder data
 		<h3> Søk etter din kommune: </h3>
         <input className="input" type="text" onChange={this.updateView} value={this.state.userInput} /> <button value={this.state.userInput} onClick={this.handleUserInput}> Søk </button>
 		<br />
